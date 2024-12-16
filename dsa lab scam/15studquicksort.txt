@@ -1,0 +1,82 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Student {
+    int rollNo;
+    string name;
+    float sgpa;
+};
+
+int partition(Student students[], int low, int high) {
+    float pivot = students[high].sgpa;
+    int i = low - 1;
+    for (int j = low; j < high; j++) {
+        if (students[j].sgpa > pivot) {
+            i++;
+            Student temp = students[i];
+            students[i] = students[j];
+            students[j] = temp;
+        }
+    }
+    Student temp = students[i + 1];
+    students[i + 1] = students[high];
+    students[high] = temp;
+    return i + 1;
+}
+
+void quickSort(Student students[], int low, int high) {
+    if (low < high) {
+        int pi = partition(students, low, high);
+        quickSort(students, low, pi - 1);
+        quickSort(students, pi + 1, high);
+    }
+}
+
+void searchBySGPA(Student students[], int n, float sgpa) {
+    bool found = false;
+    for (int i = 0; i < n; i++) {
+        if (students[i].sgpa == sgpa) {
+            cout << "Roll No: " << students[i].rollNo << ", Name: " << students[i].name << ", SGPA: " << students[i].sgpa << endl;
+            found = true;
+        }
+    }
+    if (!found) {
+        cout << "No student found with SGPA: " << sgpa << endl;
+    }
+}
+
+int main() {
+    Student students[15] = {
+        {1, "Alice", 9.2},
+        {2, "Bob", 8.5},
+        {3, "Charlie", 9.7},
+        {4, "Diana", 8.9},
+        {5, "Eve", 9.4},
+        {6, "Frank", 8.0},
+        {7, "Grace", 9.8},
+        {8, "Hank", 7.5},
+        {9, "Ivy", 8.8},
+        {10, "Jack", 9.0},
+        {11, "Kevin", 7.0},
+        {12, "Laura", 8.6},
+        {13, "Mona", 9.1},
+        {14, "Nina", 7.8},
+        {15, "Oscar", 8.7}
+    };
+
+    int n = 15;
+    quickSort(students, 0, n - 1);
+
+    cout << "Top 10 Toppers:" << endl;
+    for (int i = 0; i < n && i < 10; i++) {
+        cout << "Roll No: " << students[i].rollNo << ", Name: " << students[i].name << ", SGPA: " << students[i].sgpa << endl;
+    }
+
+    float sgpa;
+    cout << "Enter SGPA to search: ";
+    cin >> sgpa;
+    searchBySGPA(students, n, sgpa);
+
+    return 0;
+}

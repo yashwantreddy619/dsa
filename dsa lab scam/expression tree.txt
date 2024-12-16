@@ -1,0 +1,55 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    char data; Node *left, *right;
+    Node(char val) : data(val), left(nullptr), right(nullptr) {}
+};
+
+Node* buildTree(const string &exp, bool isPostfix) {
+    stack<Node*> st;
+    for (int i = (isPostfix ? 0 : exp.size() - 1); (isPostfix ? i < exp.size() : i >= 0); i += (isPostfix ? 1 : -1)) {
+        Node *node = new Node(exp[i]);
+        if (isalnum(exp[i])) st.push(node);
+        else {
+            if (!isPostfix) swap(node->left, node->right);
+            node->right = st.top(); st.pop();
+            node->left = st.top(); st.pop();
+            st.push(node);
+        }
+    }
+    return st.top();
+}
+
+void traverse(Node *root, bool isInorder, bool isRecursive) {
+    if (!root) return;
+    if (isRecursive) {
+        if (isInorder) { traverse(root->left, 1, 1); cout << root->data << " "; traverse(root->right, 1, 1); }
+        else { cout << root->data << " "; traverse(root->left, 0, 1); traverse(root->right, 0, 1); }
+    } else {
+        stack<Node*> st;
+        Node *curr = root;
+        while (curr || !st.empty()) {
+            if (isInorder) {
+                while (curr) st.push(curr), curr = curr->left;
+                curr = st.top(); st.pop(); cout << curr->data << " "; curr = curr->right;
+            } else {
+                if (curr) { cout << curr->data << " "; if (curr->right) st.push(curr->right); curr = curr->left; }
+                else curr = st.top(), st.pop();
+            }
+        }
+    }
+}
+
+int main() {
+    string postfix = "ab+c*", prefix = "*+abc";
+    Node *postfixTree = buildTree(postfix, 1), *prefixTree = buildTree(prefix, 0);
+
+    cout << "Postfix Tree Traversals:\nRecursive In-order: "; traverse(postfixTree, 1, 1); cout << "\nRecursive Pre-order: "; traverse(postfixTree, 0, 1);
+    cout << "\nNon-recursive In-order: "; traverse(postfixTree, 1, 0); cout << "\nNon-recursive Pre-order: "; traverse(postfixTree, 0, 0);
+
+    cout << "\n\nPrefix Tree Traversals:\nRecursive In-order: "; traverse(prefixTree, 1, 1); cout << "\nRecursive Pre-order: "; traverse(prefixTree, 0, 1);
+    cout << "\nNon-recursive In-order: "; traverse(prefixTree, 1, 0); cout << "\nNon-recursive Pre-order: "; traverse(prefixTree, 0, 0);
+
+    return 0;
+}

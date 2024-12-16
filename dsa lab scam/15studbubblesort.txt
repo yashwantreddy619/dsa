@@ -1,0 +1,69 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Student {
+    int rollNo;
+    string name;
+    float sgpa;
+};
+
+void bubbleSortByRollNo(Student students[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (students[j].rollNo > students[j + 1].rollNo) {
+                Student temp = students[j];
+                students[j] = students[j + 1];
+                students[j + 1] = temp;
+            }
+        }
+    }
+}
+
+void insertionSortByName(Student students[], int n) {
+    for (int i = 1; i < n; i++) {
+        Student key = students[i];
+        int j = i - 1;
+        while (j >= 0 && students[j].name > key.name) {
+            students[j + 1] = students[j];
+            j--;
+        }
+        students[j + 1] = key;
+    }
+}
+
+int main() {
+    Student students[15] = {
+        {5, "Alice", 8.5},
+        {3, "Bob", 7.8},
+        {1, "Charlie", 9.0},
+        {4, "Diana", 8.5},
+        {2, "Eve", 7.0},
+        {6, "Frank", 8.2},
+        {10, "Grace", 8.5},
+        {9, "Hank", 7.8},
+        {7, "Ivy", 9.2},
+        {8, "Jack", 6.5},
+        {11, "Kevin", 8.6},
+        {12, "Laura", 7.9},
+        {13, "Mona", 8.3},
+        {14, "Nina", 7.4},
+        {15, "Oscar", 7.2}
+    };
+
+    int n = 15;
+
+    bubbleSortByRollNo(students, n);
+    cout << "Roll Call List (Sorted by Roll Number):" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "Roll No: " << students[i].rollNo << ", Name: " << students[i].name << ", SGPA: " << students[i].sgpa << endl;
+    }
+
+    insertionSortByName(students, n);
+    cout << "\nList of Students (Sorted Alphabetically by Name):" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "Roll No: " << students[i].rollNo << ", Name: " << students[i].name << ", SGPA: " << students[i].sgpa << endl;
+    }
+
+    return 0;
+}

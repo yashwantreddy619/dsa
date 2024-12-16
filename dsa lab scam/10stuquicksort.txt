@@ -1,0 +1,94 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Student {
+    int rollNo;
+    string name;
+    float sgpa;
+};
+
+int partition(Student students[], int low, int high) {
+    float pivot = students[high].sgpa;
+    int i = low - 1;
+    for (int j = low; j < high; j++) {
+        if (students[j].sgpa > pivot) {
+            i++;
+            Student temp = students[i];
+            students[i] = students[j];
+            students[j] = temp;
+        }
+    }
+    Student temp = students[i + 1];
+    students[i + 1] = students[high];
+    students[high] = temp;
+    return i + 1;
+}
+
+void quickSort(Student students[], int low, int high) {
+    if (low < high) {
+        int pi = partition(students, low, high);
+        quickSort(students, low, pi - 1);
+        quickSort(students, pi + 1, high);
+    }
+}
+
+void binarySearch(Student students[], int n, string key) {
+    int left = 0, right = n - 1;
+    bool found = false;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (students[mid].name == key) {
+            cout << "Roll No: " << students[mid].rollNo << ", Name: " << students[mid].name << ", SGPA: " << students[mid].sgpa << endl;
+            found = true;
+            int i = mid - 1;
+            while (i >= 0 && students[i].name == key) {
+                cout << "Roll No: " << students[i].rollNo << ", Name: " << students[i].name << ", SGPA: " << students[i].sgpa << endl;
+                i--;
+            }
+            i = mid + 1;
+            while (i < n && students[i].name == key) {
+                cout << "Roll No: " << students[i].rollNo << ", Name: " << students[i].name << ", SGPA: " << students[i].sgpa << endl;
+                i++;
+            }
+            break;
+        } else if (students[mid].name < key) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    if (!found) {
+        cout << "No student found with name: " << key << endl;
+    }
+}
+
+int main() {
+    Student students[10] = {
+        {1, "Alice", 9.2},
+        {2, "Bob", 8.5},
+        {3, "Charlie", 9.7},
+        {4, "Diana", 8.9},
+        {5, "Eve", 9.4},
+        {6, "Frank", 8.0},
+        {7, "Grace", 9.8},
+        {8, "Hank", 7.5},
+        {9, "Ivy", 8.8},
+        {10, "Jack", 9.0}
+    };
+
+    int n = 10;
+    quickSort(students, 0, n - 1);
+
+    cout << "Top 10 Toppers:" << endl;
+    for (int i = 0; i < n && i < 10; i++) {
+        cout << "Roll No: " << students[i].rollNo << ", Name: " << students[i].name << ", SGPA: " << students[i].sgpa << endl;
+    }
+
+    string name;
+    cout << "Enter name to search: ";
+    cin >> name;
+    binarySearch(students, n, name);
+
+    return 0;
+}

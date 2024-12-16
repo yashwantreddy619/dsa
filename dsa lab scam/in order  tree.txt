@@ -1,0 +1,98 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node *left, *right;
+    bool rightThread;
+};
+
+class ThreadedBinaryTree {
+    Node* root;
+
+public:
+    ThreadedBinaryTree() : root(nullptr) {}
+
+    Node* newNode(int data) {
+        Node* temp = new Node();
+        temp->data = data;
+        temp->left = temp->right = nullptr;
+        temp->rightThread = false;
+        return temp;
+    }
+
+    void insert(int data) {
+        if (!root) {
+            root = newNode(data);
+            return;
+        }
+        Node* curr = root;
+        while (true) {
+            if (data < curr->data) {
+                if (!curr->left) {
+                    curr->left = newNode(data);
+                    return;
+                }
+                curr = curr->left;
+            } else {
+                if (!curr->right || curr->rightThread) {
+                    Node* temp = newNode(data);
+                    temp->right = curr->right;
+                    curr->rightThread = true;
+                    curr->right = temp;
+                    return;
+                }
+                curr = curr->right;
+            }
+        }
+    }
+
+    void inOrderTraversal(Node* node) {
+        if (!node) return;
+        while (node->left) node = node->left;
+        while (node) {
+            cout << node->data << " ";
+            if (node->rightThread)
+                node = node->right;
+            else
+                node = node->right ? node->right : nullptr;
+        }
+    }
+
+    void preOrderTraversal(Node* node) {
+        if (!node) return;
+        cout << node->data << " ";
+        if (!node->left) {
+            if (node->rightThread) node = node->right;
+            else node = node->right ? node->right : nullptr;
+        } else {
+            node = node->left;
+        }
+    }
+
+    void displayInOrder() {
+        inOrderTraversal(root);
+        cout << endl;
+    }
+
+    void displayPreOrder() {
+        preOrderTraversal(root);
+        cout << endl;
+    }
+};
+
+int main() {
+    ThreadedBinaryTree tree;
+    tree.insert(50);
+    tree.insert(30);
+    tree.insert(70);
+    tree.insert(20);
+    tree.insert(40);
+    tree.insert(60);
+    tree.insert(80);
+
+    tree.displayInOrder();
+    tree.displayPreOrder();
+
+    return 0;
+}
